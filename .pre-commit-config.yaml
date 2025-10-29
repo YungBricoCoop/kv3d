@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2025 Elwan Mayencourt <mayencourt@elwan.ch>
+#
+# SPDX-License-Identifier: MIT
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v5.0.2
+    hooks:
+      - id: reuse
