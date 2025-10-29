@@ -5,35 +5,31 @@ package cmd
 
 import (
 	"fmt"
+	"kvd/internal/docker"
+	"log"
 
 	"github.com/spf13/cobra"
 )
 
-// setCmd represents the set command.
 var setCmd = &cobra.Command{
-	Use:   "set",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:   "set [key] [value]",
+	Short: "Set a key-value pair in a new container.",
+	Long: `Creates and starts a new Docker container with a given name and a label 'value' set to the provided value.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	For example:
+	kvd set my-container my-value`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("set called")
+		containerName := args[0]
+		labelValue := args[1]
+		err := docker.RunContainer(containerName, labelValue)
+		if err != nil {
+			log.Fatalf("Error running container: %v", err)
+		}
+		fmt.Printf("Container '%s' started with value '%s'\n", containerName, labelValue)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(setCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// setCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// setCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

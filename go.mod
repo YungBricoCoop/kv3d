@@ -1,4 +1,4 @@
-module github.com/YungBricoCoop/kv3d
+module kvd
 
 go 1.23.2
 

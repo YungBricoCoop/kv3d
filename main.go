@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/YungBricoCoop/kv3d/cmd"
+import "kvd/cmd"
 
 func main() {
 	cmd.Execute()
