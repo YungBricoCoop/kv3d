@@ -79,7 +79,7 @@ func handleDel(command []string) string {
 	}
 
 	key := command[1]
-	err := docker.DeleteContainer(key)
+	err := docker.DeleteContainer(key, 1)
 	if err != nil {
 		return EncodeInteger(0)
 	}

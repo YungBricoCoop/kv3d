@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"kvd/internal/utils"
+	"log"
 	"os/exec"
 	"strings"
 )
@@ -38,12 +39,25 @@ func RunContainer(containerName, labelValue string, retries int) error {
 	return fmt.Errorf("could not run container: %v: %s", err, stderr.String())
 }
 
-func DeleteContainer(containerName string) error {
+func DeleteContainer(containerName string, retries int) error {
+	toPruneContainerName := prunePrefix + utils.GenerateRandomString(pruneSuffixLength)
+
+	if renameErr := RenameContainer(containerName, toPruneContainerName); renameErr != nil {
+		if retries > 0 {
+			return DeleteContainer(containerName, retries-1)
+		}
+		return renameErr
+	}
+
+	return nil
+}
+
+func ForceDeleteContainer(containerName string) error {
 	cmdStop := exec.Command("docker", "stop", containerName)
 	var stderrStop bytes.Buffer
 	cmdStop.Stderr = &stderrStop
 	if err := cmdStop.Run(); err != nil {
-		fmt.Printf("Could not stop container (it might be already stopped): %v: %s\n", err, stderrStop.String())
+		log.Printf("Could not stop container (it might be already stopped): %v: %s", err, stderrStop.String())
 	}
 
 	cmdRm := exec.Command("docker", "rm", containerName)
@@ -78,4 +92,23 @@ func RenameContainer(oldName, newName string) error {
 		return fmt.Errorf("could not rename container: %v: %s", err, stderr.String())
 	}
 	return nil
+}
+
+func ListPruneContainers() ([]string, error) {
+	cmd := exec.Command("docker", "ps", "-a", "--filter", "name=^"+prunePrefix, "--format", "{{.Names}}")
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		return nil, fmt.Errorf("could not list prune containers: %v: %s", err, stderr.String())
+	}
+
+	containerNames := strings.Split(strings.TrimSpace(out.String()), "\n")
+	if len(containerNames) == 1 && containerNames[0] == "" {
+		return []string{}, nil
+	}
+
+	return containerNames, nil
 }

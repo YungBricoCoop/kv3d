@@ -6,14 +6,17 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"kvd/internal/docker"
 	"kvd/internal/resp"
 	"log"
 	"net"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
 var port int
+var pruneInterval int
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -27,8 +30,10 @@ Docker container operations:
   - GET: Retrieves value from the container label matching the key
   - DEL: Removes the container associated with the key
 
-Example:
-  kvd serve --port 6379
+Examples:
+  kvd serve
+	kvd serve --port 6379
+	kvd serve --prune-interval 600
 
 Connect with any Redis client:
   redis-cli -p 6379
@@ -43,6 +48,7 @@ Connect with any Redis client:
 func init() {
 	rootCmd.AddCommand(serveCmd)
 	serveCmd.Flags().IntVarP(&port, "port", "p", 6379, "Port to listen on")
+	serveCmd.Flags().IntVarP(&pruneInterval, "prune-interval", "i", 30, "Interval in seconds between container pruning runs")
 }
 
 func startServer(port int) {
@@ -52,6 +58,8 @@ func startServer(port int) {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 	defer listener.Close()
+
+	docker.StartPruner(time.Duration(pruneInterval) * time.Second)
 
 	log.Printf("KVD server listening on %s", address)
 
