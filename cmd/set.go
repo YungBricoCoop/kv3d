@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Elwan Mayencourt <mayencourt@elwan.ch>
 */
 package cmd
 
@@ -13,11 +13,9 @@ import (
 
 var setCmd = &cobra.Command{
 	Use:   "set [key] [value]",
-	Short: "Set a key-value pair, key=container name, value=label value",
-	Long: `Creates and starts a new Docker container with a given name has 'key' and a label 'value' set to the provided value.
-
-	For example:
-	kvd set my-container my-value`,
+	Short: "Sets a key-value pair using a labeled container",
+	Long: `Sets a key-value pair by creating a Docker container.
+The key is used as the container name, and the value is stored in a label.`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		key := args[0]
