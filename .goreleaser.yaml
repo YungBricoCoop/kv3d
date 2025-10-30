@@ -1,0 +1,91 @@
+# SPDX-FileCopyrightText: 2025 Elwan Mayencourt <mayencourt@elwan.ch>
+#
+# SPDX-License-Identifier: MIT
+
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+universal_binaries:
+  - replace: false
+
+archives:
+  - formats: ["tar.gz"]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        formats: ["zip"]
+
+nfpms:
+  - maintainer: Elwan Mayencourt <mayencourt@elwan.ch>
+    description: A dumb Redis-compatible key-value database using Docker as storage
+    homepage: https://github.com/YungBricoCoop/kvd
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  mode: keep-existing
+
+brews:
+  - repository:
+      owner: YungBricoCoop
+      name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: https://github.com/YungBricoCoop/kvd
+    description: A dumb Redis-compatible key-value database using Docker as storage
+    license: MIT
+    test: |
+      system "#{bin}/kvd", "--help"
+    install: |
+      bin.install "kvd"
+
+chocolateys:
+  - owners: Elwan Mayencourt
+    authors: Elwan Mayencourt
+    project_url: https://github.com/YungBricoCoop/kvd
+    copyright: 2025 Elwan Mayencourt
+    license_url: https://github.com/YungBricoCoop/kvd/blob/main/LICENSE
+    require_license_acceptance: false
+    project_source_url: https://github.com/YungBricoCoop/kvd
+    docs_url: https://github.com/YungBricoCoop/kvd/blob/main/README.md
+    bug_tracker_url: https://github.com/YungBricoCoop/kvd/issues
+    tags: "redis docker key-value database cli"
+    summary: A dumb Redis-compatible key-value database using Docker as storage
+    description: |
+      KVD is a deliberately inefficient but fun key-value database that uses
+      Docker containers as its storage engine. It speaks the RESP protocol,
+      making it compatible with Redis clients and commands.
+    release_notes: "https://github.com/YungBricoCoop/kvd/releases/tag/v{{ .Version }}"
+    api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
