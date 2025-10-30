@@ -18,19 +18,6 @@ func RunContainer(containerName, labelValue string) error {
 	return nil
 }
 
-func GetLabelValue(containerName string) (string, error) {
-	cmd := exec.Command("docker", "inspect", "--format", `'{{index .Config.Labels "value"}}'`, containerName)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		return "", fmt.Errorf("could not inspect container: %v: %s", err, stderr.String())
-	}
-	return strings.Trim(strings.TrimSpace(out.String()), "'"), nil
-}
-
 func DeleteContainer(containerName string) error {
 	cmdStop := exec.Command("docker", "stop", containerName)
 	var stderrStop bytes.Buffer
@@ -47,4 +34,17 @@ func DeleteContainer(containerName string) error {
 	}
 
 	return nil
+}
+
+func GetContainerLabelValue(containerName string) (string, error) {
+	cmd := exec.Command("docker", "inspect", "--format", `'{{index .Config.Labels "value"}}'`, containerName)
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("could not inspect container: %v: %s", err, stderr.String())
+	}
+	return strings.Trim(strings.TrimSpace(out.String()), "'"), nil
 }

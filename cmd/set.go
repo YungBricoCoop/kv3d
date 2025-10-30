@@ -13,20 +13,20 @@ import (
 
 var setCmd = &cobra.Command{
 	Use:   "set [key] [value]",
-	Short: "Set a key-value pair in a new container.",
-	Long: `Creates and starts a new Docker container with a given name and a label 'value' set to the provided value.
+	Short: "Set a key-value pair, key=container name, value=label value",
+	Long: `Creates and starts a new Docker container with a given name has 'key' and a label 'value' set to the provided value.
 
 	For example:
 	kvd set my-container my-value`,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		containerName := args[0]
-		labelValue := args[1]
-		err := docker.RunContainer(containerName, labelValue)
+		key := args[0]
+		value := args[1]
+		err := docker.RunContainer(key, value)
 		if err != nil {
-			log.Fatalf("Error running container: %v", err)
+			log.Fatalf("Error setting key-value pair: %v", err)
 		}
-		fmt.Printf("Container '%s' started with value '%s'\n", containerName, labelValue)
+		fmt.Printf("Successfully set key '%s' with value '%s'\n", key, value)
 	},
 }
 
