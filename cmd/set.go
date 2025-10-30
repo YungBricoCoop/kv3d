@@ -20,7 +20,8 @@ The key is used as the container name, and the value is stored in a label.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		key := args[0]
 		value := args[1]
-		err := docker.RunContainer(key, value)
+
+		err := docker.RunContainer(key, value, 1)
 		if err != nil {
 			log.Fatalf("Error setting key-value pair: %v", err)
 		}
