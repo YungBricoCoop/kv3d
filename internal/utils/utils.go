@@ -1,7 +1,7 @@
 /*
 Copyright © 2025 Elwan Mayencourt <mayencourt@elwan.ch>
 */
-package docker
+package utils
 
 import (
 	"math/rand/v2"
@@ -9,7 +9,7 @@ import (
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 
-func generateRandomString(n int) string {
+func GenerateRandomString(n int) string {
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letterRunes[rand.IntN(len(letterRunes))]

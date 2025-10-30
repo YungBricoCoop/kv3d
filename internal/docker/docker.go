@@ -6,6 +6,7 @@ package docker
 import (
 	"bytes"
 	"fmt"
+	"kvd/internal/utils"
 	"os/exec"
 	"strings"
 )
@@ -25,7 +26,7 @@ func RunContainer(containerName, labelValue string, retries int) error {
 
 	if retries > 0 && strings.Contains(stderr.String(), "Conflict. The container name") {
 
-		toPruneContainerName := prunePrefix + generateRandomString(pruneSuffixLength)
+		toPruneContainerName := prunePrefix + utils.GenerateRandomString(pruneSuffixLength)
 
 		if renameErr := RenameContainer(containerName, toPruneContainerName); renameErr != nil {
 			return renameErr

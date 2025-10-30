@@ -1,39 +1,92 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Elwan Mayencourt <mayencourt@elwan.ch>
 */
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"kvd/internal/resp"
+	"log"
+	"net"
 
 	"github.com/spf13/cobra"
 )
 
-// serveCmd represents the serve command.
+var port int
+
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Start a Redis-compatible server using Docker as the storage engine",
+	Long: `Start a Redis-compatible server that accepts Redis protocol commands (GET, SET, DEL).
+kvd uses Docker containers as the underlying key-value storage engine.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The server listens for Redis client connections and translates Redis commands into
+Docker container operations:
+  - SET: Creates a container with the key as name and value as label
+  - GET: Retrieves value from the container label matching the key
+  - DEL: Removes the container associated with the key
+
+Example:
+  kvd serve --port 6379
+
+Connect with any Redis client:
+  redis-cli -p 6379
+  > SET mykey myvalue
+  > GET mykey
+  > DEL mykey`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		startServer(port)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
+	serveCmd.Flags().IntVarP(&port, "port", "p", 6379, "Port to listen on")
+}
 
-	// Here you will define your flags and configuration settings.
+func startServer(port int) {
+	address := fmt.Sprintf(":%d", port)
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+	defer listener.Close()
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
+	log.Printf("KVD server listening on %s", address)
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("Failed to accept connection: %v", err)
+			continue
+		}
+		go handleConnection(conn)
+	}
+}
+
+func handleConnection(conn net.Conn) {
+	defer conn.Close()
+	log.Printf("New connection from %s", conn.RemoteAddr())
+
+	reader := bufio.NewReader(conn)
+
+	for {
+		command, err := resp.ReadArray(reader)
+		if err != nil {
+			log.Printf("Connection closed: %v", err)
+			return
+		}
+
+		if len(command) == 0 {
+			continue
+		}
+
+		response := resp.ProcessCommand(command)
+		_, err = conn.Write([]byte(response))
+		if err != nil {
+			log.Printf("Failed to write response: %v", err)
+			return
+		}
+	}
 }
