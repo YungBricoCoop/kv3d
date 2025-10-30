@@ -22,28 +22,55 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-var cfgFile string
-
-// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "kvd",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A dumb Redis compatible key-value database using Docker as storage",
+	Long: `
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""\___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+         \    \        __/
+          \____\______/
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+         _  ____   _____
+        | |/ /\ \ / /   \
+        | ' <  \ V /| |) |
+        |_|\_\  \_/ |___/
+
+────────────────────────────────────────────────────────────────
+ KVD — Key Value Docker - dumb docker-powered key-value database
+───────────────────────────────────────────────────────────────
+	Author:  Elwan Mayencourt <mayencourt@elwan.ch>
+
+Description:
+  kvd is a dumb key-value database that uses Docker containers
+  as its storage engine. it speaks the RESP protocol, compatible with
+  basic redis clients and commands. Why "dumb"? Because it's one of the worst
+	possible way to implement a key-value store, very inefficient but fun.
+
+
+Requirements:
+  • Docker must be installed and running on the host machine
+
+Examples:
+  kvd serve --port 6379
+  redis-cli -p 6379
+    > SET mykey myvalue
+    > GET mykey
+
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// Display the Long description when run without subcommands
+		cmd.Println(cmd.Long)
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -56,39 +83,5 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.kvd.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".kvd" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".kvd")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
+	// Child commands are added in their respective files (e.g., serve.go)
 }
