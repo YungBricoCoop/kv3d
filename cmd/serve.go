@@ -57,7 +57,11 @@ func startServer(port int) {
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
-	defer listener.Close()
+	defer func() {
+		if err := listener.Close(); err != nil {
+			log.Printf("Error closing listener: %v", err)
+		}
+	}()
 
 	docker.StartPruner(time.Duration(pruneInterval) * time.Second)
 
@@ -74,7 +78,11 @@ func startServer(port int) {
 }
 
 func handleConnection(conn net.Conn) {
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("Error closing connection: %v", err)
+		}
+	}()
 	log.Printf("New connection from %s", conn.RemoteAddr())
 
 	reader := bufio.NewReader(conn)
