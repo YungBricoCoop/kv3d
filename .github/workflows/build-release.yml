@@ -72,8 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
-          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --skip=homebrew --skip=nfpm --skip=docker --skip=snapcraft --skip=scoop --skip=sbom --skip=sign --skip=notarize --skip=nix --skip=ko --skip=makeself --skip=announce --single-target
+          args: release --clean --config .goreleaser.windows.yaml
