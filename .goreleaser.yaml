@@ -57,20 +57,21 @@ changelog:
 release:
   mode: keep-existing
 
-brews:
-  - repository:
+homebrew_casks:
+  - name: kvd
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/kvd"]
+          end
+    repository:
       owner: YungBricoCoop
       name: homebrew-tap
       token: "{{ .Env.TAP_GITHUB_TOKEN }}"
-    directory: Formula
     homepage: https://github.com/YungBricoCoop/kvd
     description: A dumb Redis-compatible key-value database using Docker as storage
     license: MIT
-    test: |
-      system "#{bin}/kvd", "--help"
-    install: |
-      bin.install "kvd"
-    skip_upload: auto
 
 chocolateys:
   - owners: Elwan Mayencourt
