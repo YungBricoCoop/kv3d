@@ -9,7 +9,9 @@ before:
     - go mod tidy
 
 builds:
-  - env:
+  - id: kvd-windows
+    main: ./cmd/kvd
+    env:
       - CGO_ENABLED=0
     goos:
       - windows
@@ -17,47 +19,48 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X main.version={{.Version}}
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .ShortCommit }}
+      - -X main.date={{ .Date }}
 
 archives:
-  - formats: ["zip"]
+  - id: winzip
+    format: zip
     name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+      {{ .ProjectName }}_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64{{- else }}{{ .Arch }}{{ end }}
+    files:
+      - LICENSE
+      - README.md
 
 checksum:
-  disable: true
+  name_template: "checksums.txt"
 
 release:
   mode: keep-existing
+  draft: false
+  prerelease: auto
 
 chocolateys:
-  - owners: Elwan Mayencourt
-    authors: Elwan Mayencourt
-    project_url: https://github.com/YungBricoCoop/kvd
-    copyright: 2025 Elwan Mayencourt
-    license_url: https://github.com/YungBricoCoop/kvd/blob/main/LICENSE
+  - name: kvd
+    ids: [winzip]
+    title: "KVD - Docker-based Redis-compatible key-value database"
+    url_template: "https://github.com/{{ .RepoOwner }}/{{ .RepoName }}/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    owners: "Elwan Mayencourt"
+    authors: "Elwan Mayencourt"
+    project_url: "https://github.com/YungBricoCoop/kvd"
+    project_source_url: "https://github.com/YungBricoCoop/kvd"
+    docs_url: "https://github.com/YungBricoCoop/kvd/blob/main/README.md"
+    bug_tracker_url: "https://github.com/YungBricoCoop/kvd/issues"
+    license_url: "https://github.com/YungBricoCoop/kvd/blob/main/LICENSE"
     require_license_acceptance: false
-    project_source_url: https://github.com/YungBricoCoop/kvd
-    docs_url: https://github.com/YungBricoCoop/kvd/blob/main/README.md
-    bug_tracker_url: https://github.com/YungBricoCoop/kvd/issues
     tags: "redis docker key-value database cli"
-    summary: A dumb Redis-compatible key-value database using Docker as storage
+    summary: "A dumb Redis-compatible key-value database using Docker as storage"
     description: |
       KVD is a deliberately inefficient but fun key-value database that uses
       Docker containers as its storage engine. It speaks the RESP protocol,
       making it compatible with Redis clients and commands.
-    release_notes: "https://github.com/YungBricoCoop/kvd/releases/tag/v{{ .Version }}"
+    release_notes: "https://github.com/YungBricoCoop/kvd/releases/tag/{{ .Tag }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     skip_publish: false
+    version_template: "{{ trimPrefix .VersionPrefix .Version }}"
