@@ -61,7 +61,7 @@ wget https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Linux_x86
 sudo rpm -i kvd_Linux_x86_64.rpm
 ```
 
-### Windows (Chocolatey)
+### Windows (Chocolatey) ❌ (Not available yet)
 
 ```powershell
 choco install kvd
