@@ -61,10 +61,11 @@ wget https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Linux_x86
 sudo rpm -i kvd_Linux_x86_64.rpm
 ```
 
-### Windows (Chocolatey) ❌ (Not available yet)
+### Windows
 
 ```powershell
-choco install kvd
+Invoke-WebRequest -Uri "https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Windows_x86_64.zip" -OutFile "kvd.zip"
+Expand-Archive -Path "kvd.zip" -DestinationPath "."
 ```
 
 ### Manual Binary Download

@@ -44,7 +44,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: GoReleaser (Linux)
+      - name: GoReleaser
         uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,12 +67,3 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: GoReleaser (Windows)
-        uses: goreleaser/goreleaser-action@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
-        with:
-          distribution: goreleaser
-          version: "~> v2"
-          args: release --clean --config .goreleaser.windows.yaml
