@@ -36,6 +36,9 @@ changelog:
       - "^docs:"
       - "^test:"
 
+checksum:
+  disable: true
+
 release:
   mode: keep-existing
 
