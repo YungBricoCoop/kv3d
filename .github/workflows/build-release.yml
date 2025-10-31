@@ -76,4 +76,4 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --skip=brew --skip=nfpm --skip=dockers --skip=snapcraft --skip=scoop --skip=archives --skip=checksums --skip=sbom --skip=sign
+          args: release --clean --skip=homebrew --skip=nfpm --skip=docker --skip=snapcraft --skip=scoop --skip=archive --skip=sbom --skip=sign --skip=notarize --skip=nix --skip=ko --skip=makeself --skip=announce
