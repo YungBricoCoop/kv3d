@@ -70,6 +70,7 @@ brews:
       system "#{bin}/kvd", "--help"
     install: |
       bin.install "kvd"
+    skip_upload: auto
 
 chocolateys:
   - owners: Elwan Mayencourt
@@ -89,3 +90,4 @@ chocolateys:
       making it compatible with Redis clients and commands.
     release_notes: "https://github.com/YungBricoCoop/kvd/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
+    skip_publish: true
