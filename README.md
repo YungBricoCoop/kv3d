@@ -20,7 +20,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23.2+-00ADD8?logo=go)](https://go.dev/)
-[![Build Status](https://github.com/YungBricoCoop/kvd/workflows/build-and-release/badge.svg)](https://github.com/YungBricoCoop/kvd/actions)
+[![Build Status](https://github.com/Bogorg/kvd/workflows/build-and-release/badge.svg)](https://github.com/Bogorg/kvd/actions)
 
 ## 🤔 What is this?
 
@@ -40,37 +40,7 @@
 
 ## 🚀 Installation
 
-### macOS (Homebrew)
-
-```bash
-brew tap YungBricoCoop/tap
-brew install kvd
-```
-
-### Linux (Debian/Ubuntu)
-
-```bash
-wget https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Linux_x86_64.deb
-sudo dpkg -i kvd_Linux_x86_64.deb
-```
-
-### Linux (RedHat/Fedora/CentOS)
-
-```bash
-wget https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Linux_x86_64.rpm
-sudo rpm -i kvd_Linux_x86_64.rpm
-```
-
-### Windows
-
-```powershell
-Invoke-WebRequest -Uri "https://github.com/YungBricoCoop/kvd/releases/latest/download/kvd_Windows_x86_64.zip" -OutFile "kvd.zip"
-Expand-Archive -Path "kvd.zip" -DestinationPath "."
-```
-
-### Manual Binary Download
-
-Download the latest binary for your platform from the [releases page](https://github.com/YungBricoCoop/kvd/releases).
+Download the latest binary for your platform from the [releases page](https://github.com/Bogorg/kvd/releases).
 
 Supported platforms:
 
@@ -81,7 +51,7 @@ Supported platforms:
 ### Build from Source
 
 ```bash
-git clone https://github.com/YungBricoCoop/kvd.git
+git clone https://github.com/Bogorg/kvd.git
 cd kvd
 go build -o kvd
 ```

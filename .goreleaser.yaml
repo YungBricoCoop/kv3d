@@ -19,7 +19,7 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X main.version={{.Version}}
+      - -s -w
 
 universal_binaries:
   - replace: false
@@ -37,7 +37,7 @@ archives:
 nfpms:
   - maintainer: Elwan Mayencourt <mayencourt@elwan.ch>
     description: A dumb Redis-compatible key-value database using Docker as storage
-    homepage: https://github.com/YungBricoCoop/kvd
+    homepage: https://github.com/Bogorg/kvd
     license: MIT
     formats:
       - deb
@@ -53,19 +53,3 @@ changelog:
 
 release:
   mode: keep-existing
-
-homebrew_casks:
-  - name: kvd
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/kvd"]
-          end
-    repository:
-      owner: YungBricoCoop
-      name: homebrew-tap
-      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
-    homepage: https://github.com/YungBricoCoop/kvd
-    description: A dumb Redis-compatible key-value database using Docker as storage
-    license: MIT
